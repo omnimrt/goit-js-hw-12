@@ -15,12 +15,6 @@ const gallery = document.querySelector('.gallery');
 const userInput = document.querySelector('input');
 const containerDiv = document.querySelector('.container');
 const loadMoreBtn = document.querySelector('.btn-load');
-const galleryItem = document.querySelector('.gallery-item');
-
-function getGalleryItemHeight() {
-  const rect = galleryItem.getBoundingClientRect();
-  return rect.height;
-}
 
 let page = 1;
 let per_page = 40;
@@ -103,7 +97,7 @@ fetchPicturesForm.addEventListener('submit', async e => {
         message:
           'Sorry, there are no images matching your search query. Please try again!',
       });
-      hideLoadMoreButton();
+
       // Прокрутка сторінки на дві висоти карточки галереї
       const { height: cardHeight } = document
         .querySelector('.gallery')
@@ -128,8 +122,13 @@ loadMoreBtn.addEventListener('click', async () => {
     page += 1;
 
     // Прокрутка сторінки на дві висоти карточки галереї
-    const galleryItemHeight = getGalleryItemHeight();
-    window.scrollBy(0, galleryItemHeight * 2);
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
 
     if (gallery.children.length > photos.totalHits) {
       iziToast.warning({
