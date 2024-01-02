@@ -15,26 +15,24 @@ const gallery = document.querySelector('.gallery');
 const userInput = document.querySelector('input');
 const containerDiv = document.querySelector('.container');
 const loadMoreBtn = document.querySelector('.btn-load');
+const galleryItem = document.querySelector('.gallery-item');
 
 function getGalleryItemHeight() {
-  const galleryItem = document.querySelector('.gallery-item');
   const rect = galleryItem.getBoundingClientRect();
   return rect.height;
 }
 
-// Controls the group number
 let page = 1;
-// Controls the number of items in the group
 let per_page = 40;
 
-// Function to show the loader
+// Відображаємо loader
 const showLoader = () => {
   const loader = document.createElement('span');
   loader.classList.add('loader');
   containerDiv.append(loader);
 };
 
-// Function to hide the loader
+// Ховаємо loader
 const hideLoader = () => {
   const loader = document.querySelector('.loader');
   if (loader) {
@@ -44,13 +42,11 @@ const hideLoader = () => {
 
 // Додано функцію для відображення кнопки "Load more"
 const showLoadMoreButton = () => {
-  const loadMoreBtn = document.querySelector('.btn-load');
   loadMoreBtn.style.display = 'block';
 };
 
 // Додано функцію для приховання кнопки "Load more"
 const hideLoadMoreButton = () => {
-  const loadMoreBtn = document.querySelector('.btn-load');
   loadMoreBtn.style.display = 'none';
 };
 
@@ -81,7 +77,7 @@ function renderPhotos(data) {
             </li>`;
     })
     .join('');
-  gallery.insertAdjacentHTML('afterbegin', markup);
+  gallery.insertAdjacentHTML('afterend', markup);
   const lightbox = new SimpleLightbox('.gallery a', options);
   lightbox.on('show.simplelightbox');
   lightbox.refresh();
@@ -89,7 +85,7 @@ function renderPhotos(data) {
 
 fetchPicturesForm.addEventListener('submit', async e => {
   showLoader();
-  e.preventDefault(); // Prevent the default form submission behavior
+  e.preventDefault();
   gallery.innerHTML = '';
 
   try {
@@ -100,10 +96,6 @@ fetchPicturesForm.addEventListener('submit', async e => {
     showLoadMoreButton();
     page += 1;
 
-    // Прокрутка сторінки на дві висоти карточки галереї
-    const galleryItemHeight = getGalleryItemHeight();
-    window.scrollBy(0, galleryItemHeight * 2);
-
     if (photos.hits.length === 0) {
       iziToast.error({
         title: '',
@@ -112,6 +104,9 @@ fetchPicturesForm.addEventListener('submit', async e => {
           'Sorry, there are no images matching your search query. Please try again!',
       });
       hideLoadMoreButton();
+      // Прокрутка сторінки на дві висоти карточки галереї
+      const galleryItemHeight = getGalleryItemHeight();
+      window.scrollBy(0, galleryItemHeight * 2);
     }
   } catch (error) {
     console.log(error);
