@@ -77,7 +77,7 @@ function renderPhotos(data) {
             </li>`;
     })
     .join('');
-  gallery.insertAdjacentHTML('afterend', markup);
+  gallery.insertAdjacentHTML('beforeend', markup);
   const lightbox = new SimpleLightbox('.gallery a', options);
   lightbox.on('show.simplelightbox');
   lightbox.refresh();
