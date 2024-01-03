@@ -59,6 +59,8 @@ async function fetchPhotos() {
   return response.data;
 }
 
+let lightbox;
+
 function renderPhotos(data) {
   const markup = data.hits
     .map(data => {
@@ -71,14 +73,20 @@ function renderPhotos(data) {
             </li>`;
     })
     .join('');
+
+  if (lightbox) {
+    lightbox.destroy();
+  }
+
   gallery.insertAdjacentHTML('beforeend', markup);
-  const lightbox = new SimpleLightbox('.gallery a', options);
+  lightbox = new SimpleLightbox('.gallery a', options);
   lightbox.on('show.simplelightbox');
   lightbox.refresh();
 }
 
 fetchPicturesForm.addEventListener('submit', async e => {
   showLoader();
+  page = 1;
   e.preventDefault();
   gallery.innerHTML = '';
 
@@ -88,7 +96,6 @@ fetchPicturesForm.addEventListener('submit', async e => {
     fetchPicturesForm.reset();
     hideLoader();
     showLoadMoreButton();
-    page += 1;
 
     if (photos.hits.length === 0) {
       iziToast.error({
@@ -116,10 +123,10 @@ fetchPicturesForm.addEventListener('submit', async e => {
 loadMoreBtn.addEventListener('click', async () => {
   showLoader();
   try {
+    page += 1;
     const photos = await fetchPhotos();
     renderPhotos(photos);
     hideLoader();
-    page += 1;
 
     // Прокрутка сторінки на дві висоти карточки галереї
     const { height: cardHeight } = document
