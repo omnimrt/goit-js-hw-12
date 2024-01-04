@@ -50,7 +50,7 @@ async function fetchPhotos() {
     per_page: per_page,
   });
   const apiKey = '41249104-77dc8b1e0563744cb8297ef15';
-  const query = userInput.value;
+  const query = userQuery || userInput.value;
   const response = await axios.get(
     `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
       query
@@ -60,6 +60,7 @@ async function fetchPhotos() {
 }
 
 let lightbox;
+let userQuery = '';
 
 function renderPhotos(data) {
   const markup = data.hits
@@ -89,6 +90,7 @@ fetchPicturesForm.addEventListener('submit', async e => {
   page = 1;
   e.preventDefault();
   gallery.innerHTML = '';
+  userQuery = userInput.value;
 
   try {
     const photos = await fetchPhotos();
