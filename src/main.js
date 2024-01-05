@@ -44,6 +44,10 @@ const hideLoadMoreButton = () => {
   loadMoreBtn.style.display = 'none';
 };
 
+function shouldHideLoadMoreButton(loadedImagesCount, totalImagesCount) {
+  return loadedImagesCount >= totalImagesCount;
+}
+
 async function fetchPhotos() {
   const params = new URLSearchParams({
     page: page,
@@ -61,6 +65,15 @@ async function fetchPhotos() {
 
 let lightbox;
 let userQuery = '';
+
+const options = {
+  captions: true,
+  captionSelector: 'img',
+  captionType: 'attr',
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  animation: 250,
+};
 
 function renderPhotos(data) {
   const markup = data.hits
@@ -116,6 +129,11 @@ fetchPicturesForm.addEventListener('submit', async e => {
         behavior: 'smooth',
       });
     }
+    if (shouldHideLoadMoreButton(gallery.children.length, photos.totalHits)) {
+      hideLoadMoreButton();
+    } else {
+      showLoadMoreButton();
+    }
   } catch (error) {
     console.log(error);
     hideLoadMoreButton();
@@ -153,12 +171,3 @@ loadMoreBtn.addEventListener('click', async () => {
     hideLoadMoreButton();
   }
 });
-
-const options = {
-  captions: true,
-  captionSelector: 'img',
-  captionType: 'attr',
-  captionsData: 'alt',
-  captionPosition: 'bottom',
-  animation: 250,
-};
