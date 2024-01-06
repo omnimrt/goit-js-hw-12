@@ -157,7 +157,7 @@ loadMoreBtn.addEventListener('click', async () => {
       behavior: 'smooth',
     });
 
-    if (gallery.children.length > photos.totalHits) {
+    if (gallery.children.length >= photos.totalHits) {
       iziToast.warning({
         title: '',
         message:
